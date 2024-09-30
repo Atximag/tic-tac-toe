@@ -1,0 +1,105 @@
+package tictactoe;
+
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        char[][] board = new char[3][3];
+        getFreeBoard(board);
+        printBoard(board);
+
+        boolean isXTurn = true;
+        while (true) {
+            int row = 0;
+            int column = 0;
+            while (true) {
+                try{
+                    row = scanner.nextInt();
+                    column = scanner.nextInt();
+                    if(row > 3 || row < 1 || column > 3 || column < 1) {
+                        System.out.println("Coordinates should be from 1 to 3!");
+                    } else if (board[row - 1][column - 1] != ' ') {
+                        System.out.println("This cell is occupied! Choose another one!");
+                    } else{
+                        break;
+                    }
+                } catch (Exception e) {
+                    System.out.println("You should enter numbers!");
+                    scanner.next();
+                }
+        }
+    
+        if  (isXTurn) {
+            board[row - 1][column - 1] = 'X';
+        } else {
+            board[row - 1][column - 1] = 'O';
+        }
+        printBoard(board);
+        String  state = getState(board);
+        System.out.println(state);
+        if  (!state.equals("Game not finished")) {
+            break;
+        } else {
+            isXTurn = !isXTurn;
+        }
+    }
+    }
+    
+    private static void getFreeBoard(char[][]  board) {
+        for  (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                board[i][j] = ' ';
+            }
+        }
+    }
+    private static void printBoard(char[][]  board) {
+        System.out.println("---------");
+        System.out.printf("""
+                          | %c %c %c |
+                          | %c %c %c |
+                          | %c %c %c |                         
+                          """, board[0][0] , board[0][1], board[0][2], 
+                                  board[1][0], board[1][1], board[1][2], 
+                                  board[2][0], board[2][1], board[2][2]);
+        System.out.println("---------");
+    }
+    private static  String getState(char[][] board) {
+        int totalX = 0;
+        int totalO = 0;
+        for (int i = 0; i < 3; i++) {
+            for(int j = 0; j < 3; j++){
+                if (board[i][j] == 'X') totalX++;
+                else if (board[i][j] == 'O') totalO++;
+            }
+        }
+        int difference  = totalO - totalX;
+        if  (difference > 1 || difference < -1) {
+            return "Impossible";
+        }
+        boolean xWon = isSymbolWon(board, 'X');
+        boolean oWon = isSymbolWon(board, 'O');
+         if (xWon && oWon) {
+            return "Impossible";
+        } else if (xWon) {
+            return "X wins";
+        } else if (oWon) {
+            return "O wins";
+        } else if (totalO + totalX == 9) {
+            return "Draw";
+        } else {
+            return "Game not finished";
+        }
+    }
+    private static boolean isSymbolWon(char[][] board, char symbol){
+         return board[0][0] == symbol && board[0][1] == symbol && board[0][2] == symbol
+                || board[1][0] == symbol && board[1][1] == symbol && board[1][2] == symbol
+                || board[2][0] == symbol && board[2][1] == symbol && board[2][2] == symbol
+                || board[0][0] == symbol && board[1][0] == symbol && board[2][0] == symbol
+                || board[0][1] == symbol && board[1][1] == symbol && board[2][1] == symbol
+                || board[0][2] == symbol && board[1][2] == symbol && board[2][2] == symbol
+                || board[0][0] == symbol && board[1][1] == symbol && board[2][2] == symbol
+                || board[0][2] == symbol && board[1][1] == symbol && board[2][0] == symbol;
+    
+    }        
+}
